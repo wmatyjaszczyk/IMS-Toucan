@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-with open('requirements.txt') as f:
+with open('requirements.txt', encoding="utf8", errors='ignore') as f:
     required = f.read().splitlines()
 
 setup(
