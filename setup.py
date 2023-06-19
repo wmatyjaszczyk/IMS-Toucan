@@ -15,7 +15,7 @@ setup(
         'torch~=2.0.0',
         'numpy~=1.23.4',
         'torchaudio~=2.0.0',
-        'soundfile~=0.11.0',
+        'soundfile~=0.12.1',
         'urllib3~=1.26.12',
         'pypinyin~=0.47.1',
         'pyloudnorm~=0.1.0',
