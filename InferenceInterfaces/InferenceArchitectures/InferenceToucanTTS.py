@@ -205,10 +205,18 @@ class ToucanTTS(torch.nn.Module):
         text_masks = make_non_pad_mask(text_lengths, device=text_lengths.device).unsqueeze(-2)
         encoded_texts, _ = self.encoder(text_tensors, text_masks, utterance_embedding=utterance_embedding, lang_ids=lang_ids)
 
-        # predicting pitch, energy and durations
-        pitch_predictions = self.pitch_predictor(encoded_texts, padding_mask=None, utt_embed=utterance_embedding) if gold_pitch is None else gold_pitch
-        energy_predictions = self.energy_predictor(encoded_texts, padding_mask=None, utt_embed=utterance_embedding) if gold_energy is None else gold_energy
-        predicted_durations = self.duration_predictor.inference(encoded_texts, padding_mask=None, utt_embed=utterance_embedding) if gold_durations is None else gold_durations
+        pitch_predictions = self.pitch_predictor(encoded_texts, padding_mask=None, utt_embed=utterance_embedding)
+        energy_predictions = self.energy_predictor(encoded_texts, padding_mask=None, utt_embed=utterance_embedding)
+        predicted_durations = self.duration_predictor.inference(encoded_texts, padding_mask=None, utt_embed=utterance_embedding)
+
+        if gold_pitch is not None:
+            pitch_predictions = (pitch_predictions + gold_pitch) / 2
+        if gold_energy is not None:
+            energy_predictions = (energy_predictions + gold_energy) / 2
+        if predicted_durations is not None:
+            predicted_durations = (predicted_durations + gold_durations) / 2
+        if text_lengths.device == torch.device("cpu"):
+            predicted_durations = predicted_durations.to(torch.int64)
 
         # modifying the predictions with linguistic knowledge and control parameters
         for phoneme_index, phoneme_vector in enumerate(text_tensors.squeeze(0)):
