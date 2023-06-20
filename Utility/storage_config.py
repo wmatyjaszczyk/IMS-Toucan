@@ -1,2 +1,2 @@
-MODELS_DIR = "Models/"
+MODELS_DIR = "root/cache/tts/"
 PREPROCESSING_DIR = "Corpora/"
