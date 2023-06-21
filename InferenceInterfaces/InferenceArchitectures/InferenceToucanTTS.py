@@ -215,8 +215,8 @@ class ToucanTTS(torch.nn.Module):
             energy_predictions = (energy_predictions + gold_energy) / 2
         if predicted_durations is not None:
             predicted_durations = (predicted_durations + gold_durations) / 2
-        if text_lengths.device == torch.device("cpu"):
-            predicted_durations = predicted_durations.to(torch.int64)
+        
+        predicted_durations = predicted_durations.to(torch.int64)
 
         # modifying the predictions with linguistic knowledge and control parameters
         for phoneme_index, phoneme_vector in enumerate(text_tensors.squeeze(0)):
