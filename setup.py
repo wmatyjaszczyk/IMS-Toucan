@@ -3,7 +3,7 @@ import os
 
 setup(
     name='IMS-Toucan',
-    version='0.1',
+    version='0.2',
     packages=find_packages(),
     install_requires=[
         'torch_complex~=0.4.3',
