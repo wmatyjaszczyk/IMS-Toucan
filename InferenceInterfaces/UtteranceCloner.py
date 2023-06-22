@@ -127,7 +127,7 @@ class UtteranceCloner:
                        text=text,
                        durations=duration.unsqueeze(0),
                        durations_lengths=torch.LongTensor([len(duration)]))[0].squeeze(0).cpu()
-        return duration, pitch, energy, start_silence, end_silence
+        return duration, pitch, energy
 
     def clone_utterance(self,
                         path_to_reference_audio_for_intonation,
