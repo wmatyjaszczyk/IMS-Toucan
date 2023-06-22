@@ -33,15 +33,6 @@ class UtteranceCloner:
         acoustic_checkpoint_path = os.path.join(MODELS_DIR, "Aligner", "aligner.pt")
         self.aligner_weights = torch.load(acoustic_checkpoint_path, map_location='cpu')["asr_model"]
         torch.hub._validate_not_a_forked_repo = lambda a, b, c: True  # torch 1.9 has a bug in the hub loading, this is a workaround
-        # careful: assumes 16kHz or 8kHz audio
-        self.silero_model, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad',
-                                                  model='silero_vad',
-                                                  force_reload=False,
-                                                  onnx=False,
-                                                  verbose=False)
-        (self.get_speech_timestamps, _, _, _, _) = utils
-        torch.set_grad_enabled(True)  # finding this issue was very infuriating: silero sets
-        # this to false globally during model loading rather than using inference_mode or no_grad
 
     def extract_prosody(self, transcript, ref_audio_path, lang="de", on_line_fine_tune=True):
         acoustic_model = Aligner()
@@ -60,16 +51,6 @@ class UtteranceCloner:
         except ValueError:
             print('Something went wrong, the reference wave might be too short.')
             raise RuntimeError
-
-        with torch.inference_mode():
-            speech_timestamps = self.get_speech_timestamps(norm_wave, self.silero_model, sampling_rate=16000)
-
-        print("***DEBUG***")
-        print(speech_timestamps)
-        print("***DEBUG***")
-        start_silence = speech_timestamps[0]['start']
-        end_silence = len(norm_wave) - speech_timestamps[-1]['end']
-        norm_wave = norm_wave[speech_timestamps[0]['start']:speech_timestamps[-1]['end']]
 
         norm_wave_length = torch.LongTensor([len(norm_wave)])
         text = self.tf.string_to_tensor(transcript, handle_missing=False).squeeze(0)
