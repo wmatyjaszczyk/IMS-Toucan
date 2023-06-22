@@ -210,11 +210,11 @@ class ToucanTTS(torch.nn.Module):
         predicted_durations = self.duration_predictor.inference(encoded_texts, padding_mask=None, utt_embed=utterance_embedding)
 
         if gold_pitch is not None:
-            pitch_predictions = (pitch_predictions + gold_pitch) / 2
+            pitch_predictions = (pitch_predictions + (gold_pitch * 0.75)) / 1.75
         if gold_energy is not None:
-            energy_predictions = (energy_predictions + gold_energy) / 2
+            energy_predictions = (energy_predictions + (gold_energy * 0.75)) / 1.75
         if predicted_durations is not None:
-            predicted_durations = (predicted_durations + gold_durations) / 2
+            predicted_durations = (predicted_durations + (gold_durations * 0.5)) / 1.5
         
         predicted_durations = predicted_durations.to(torch.int64)
 
