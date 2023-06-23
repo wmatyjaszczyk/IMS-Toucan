@@ -213,7 +213,7 @@ class ToucanTTS(torch.nn.Module):
             pitch_predictions = (pitch_predictions + (gold_pitch * 0.15)) / 1.15
         if gold_energy is not None:
             energy_predictions = (energy_predictions + (gold_energy * 0.15)) / 1.15
-        if predicted_durations is not None:
+        if gold_durations is not None:
             predicted_durations = (predicted_durations + (gold_durations * 0.15)) / 1.15
         
         predicted_durations = predicted_durations.to(torch.int64)
